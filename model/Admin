@@ -1,0 +1,29 @@
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
+
+const AdminAvailabilitySchema = new Schema(
+  {
+    day: { type: String },
+    startTime: { type: String },
+    endTime: { type: String },
+    isAvailable: { type: Boolean },
+    slots: { type: [Schema.Types.Mixed] },
+    hour: { type: [Schema.Types.Mixed] },
+  },
+  { timestamps: true }
+);
+
+const virtual = AdminAvailabilitySchema.virtual("id");
+virtual.get(function () {
+  return this._id; 
+});
+
+AdminAvailabilitySchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id;
+  },
+});
+
+exports.AdminAvailability = mongoose.model("AdminAvailability", AdminAvailabilitySchema); 

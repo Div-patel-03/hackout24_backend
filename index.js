@@ -14,9 +14,7 @@ const cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 const usersRouter = require("./routes/User");
 const authRouter = require("./routes/Auth");
-const birthDetailsRouter = require("./routes/BirthDetails");
 const adminRouter = require("./routes/Admin");
-const savedBirthDetailsRouter = require("./routes/SavedBirthDetails");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 
@@ -24,7 +22,6 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.json());
-
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
@@ -35,7 +32,6 @@ app.use(
     secret: process.env.SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: false,
-
   })
 );
 
@@ -45,13 +41,7 @@ app.use(passport.authenticate("session"));
 
 app.use("/users", isAuth(), usersRouter.router);
 app.use("/auth", authRouter.router);
-app.use("/birthDetails", birthDetailsRouter.router);
-app.use("/savedBirthDetails", savedBirthDetailsRouter.router);
 app.use("/admin", adminRouter.router);
-
-  
-
-
 
 passport.use(
   "local",
@@ -99,7 +89,7 @@ passport.use(
     async function (jwt_payload, done) {
       try {
         const user = await User.findById(jwt_payload.id);
-        console.log("inside jwt ")
+        console.log("inside jwt ");
         if (user) {
           return done(null, sanitizeUser(user));
         } else {
